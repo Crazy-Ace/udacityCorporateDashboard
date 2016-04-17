@@ -1,0 +1,16 @@
+{
+  "name": "corporate-dashboard",
+  "version": "0.0.1",
+  "description": "A dashboard project built for the Udacity Senior Web Developer Nanodegree. The project uses Angular2 on the frontend and Node on the backend.",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "typings install"
+  },
+  "keywords": [
+    "Udacity",
+    "Angular2",
+    "WebSockets"
+  ],
+  "author": "Filip Lauc <filip.lauc93@gmail.com> (https://github.com/flauc)",
+  "license": "MIT"
+}
