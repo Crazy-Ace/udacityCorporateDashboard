@@ -111,7 +111,7 @@ gulp.task('dev-build', ['clear-all', 'system-build', 'move-vendor-js', 'move-ven
 });
 
 
-gulp.task('watch-app', ['dev-build'], () => {
+gulp.task('watch-app', () => {
     gulp.watch(files.ts, ['system-build'], () => {
         var target = gulp.src(files.index);
         js = gulp.src(files.buildOrder);

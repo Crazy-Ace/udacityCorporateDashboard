@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 
 @Component({
     selector: 'fl-map',
-    templateUrl: 'dist/templates/map.html'
+    templateUrl: 'templates/map.html'
 })
 
 export class MapComponent {

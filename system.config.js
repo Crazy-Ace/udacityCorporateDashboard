@@ -1,20 +1,38 @@
-/**
- * System configuration for Angular 2 samples
- * Adjust as necessary for your application needs.
- */
+
 (function(global) {
-    // map tells the System loader where to look for things
     var map = {
-        'app':                        'dist/temp', // 'dist',
-        '@angular':                   'node_modules/@angular',
-        'rxjs':                       'node_modules/rxjs'
-    };
-    // packages tells the System loader how to load when no filename and/or no extension
-    var packages = {
-        'app':                        { main: 'main.js',  defaultExtension: 'js' },
-        'rxjs':                       { defaultExtension: 'js' }
-    };
-    var ngPackageNames = [
+        'app': 'dist/temp',
+        '@angular': 'node_modules/@angular',
+        'rxjs': 'node_modules/rxjs',
+
+        // @ngrx/core
+        '@ngrx/core': 'node_modules/@ngrx/core',
+
+        // @ngrx/router
+        '@ngrx/router': 'node_modules/@ngrx/router',
+
+        // @ngrx/router dependencies
+        'path-to-regexp': 'node_modules/path-to-regexp',
+        'isarray': 'node_modules/isarray',
+        'query-string': 'node_modules/query-string',
+        'strict-uri-encode': 'node_modules/strict-uri-encode',
+        'object-assign': 'node_modules/object-assign'
+    },
+    packages = {
+        'app': { main: 'main.js', defaultExtension: 'js' },
+        'rxjs': { defaultExtension: 'js' },
+        // @ngrx/core package
+        '@ngrx/core': { main: 'index.js', defaultExtension: 'js'},
+        // @ngrx/router package
+        '@ngrx/router': {main: 'index.js', defaultExtension: 'js'},
+        // @ngrx/router dependencies
+        'path-to-regexp': {main: 'index.js', defaultExtension: 'js'},
+        'isarray': {main: 'index.js', defaultExtension: 'js'},
+        'query-string': {main: 'index.js', defaultExtension: 'js'},
+        'strict-uri-encode': {main: 'index.js', defaultExtension: 'js'},
+        'object-assign': {main: 'index.js', defaultExtension: 'js'}
+    },
+    ngPackageNames = [
         'common',
         'compiler',
         'core',
@@ -23,7 +41,7 @@
         'platform-browser',
         'platform-browser-dynamic',
         'router',
-        'upgrade',
+        'upgrade'
     ];
     // Individual files (~300 requests):
     function packIndex(pkgName) {
@@ -33,9 +51,8 @@
     function packUmd(pkgName) {
         packages['@angular/'+pkgName] = { main: '/bundles/' + pkgName + '.umd.js', defaultExtension: 'js' };
     }
-    // Most environments should use UMD; some (Karma) need the individual index files
+
     var setPackageConfig = packUmd;
-    // Add package entries for angular packages
     ngPackageNames.forEach(setPackageConfig);
     var config = {
         map: map,
