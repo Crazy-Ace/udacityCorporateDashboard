@@ -7,6 +7,7 @@ var gulp = require('gulp'),
     del = require('del'),
     SystemBuilder = require('systemjs-builder'),
     uglify = require('gulp-uglify'),
+    stylus = require('gulp-stylus'),
 
     files = {
         dist: './dist/',
@@ -26,6 +27,13 @@ var gulp = require('gulp'),
             './dist/temp/Reflect.js',
             './dist/temp/system.src.js',
             './dist/temp/ts.js'
+        ],
+        stylus: {
+            main: './assets/stylus/style.styl',
+            all: './assets/stylus/**/**.styl',
+        },
+        vendorCss: [
+            'node_modules/materialize-css/dist/css/materialize.min.css'
         ]
     };
 
@@ -40,7 +48,11 @@ gulp.task('compile-ts', () => {
     return tsResult.js.pipe(gulp.dest(files.dist + 'temp'))
 });
 
+// Move required files to dist
 gulp.task('move-vendor-js', () => gulp.src(files.vendorJs).pipe(gulp.dest(files.dist + 'temp')));
+gulp.task('move-vendor-css', () => gulp.src(files.vendorCss).pipe(gulp.dest(files.dist + 'devCss')));
+gulp.task('move-templates', () => gulp.src(files.templates).pipe(gulp.dest(files.dist + 'templates')));
+
 gulp.task('system-build', ['compile-ts'], () => {
     var builder = new SystemBuilder();
     return builder.loadConfig(files.system)
@@ -60,7 +72,14 @@ gulp.task('minify', ['concat'], () => {
 });
 
 gulp.task('clean-extra', ['minify'], () => del(files.dist + 'temp'));
-gulp.task('clear-all', () => del([files.dist + 'temp', files.dist + '**/**.js']));
+
+gulp.task('clear-all', () => del([files.dist + 'temp', files.dist + '**/**.js', files.dist + 'devCss', files.dist + 'templates']));
+
+gulp.task('compile-stylus', () => {
+    return gulp.src(files.stylus.main)
+        .pipe(stylus())
+        .pipe(gulp.dest(files.dist + 'devCss'));
+});
 
 
 /*
@@ -78,12 +97,12 @@ gulp.task('prod-build', ['clear-all', 'clean-extra'], () => {
 /*
     Development Build
  */
-gulp.task('dev-build', ['clear-all', 'system-build', 'move-vendor-js'], () => {
-    var target = gulp.src(files.index);
-        js = gulp.src(files.buildOrder);
+gulp.task('dev-build', ['clear-all', 'system-build', 'move-vendor-js', 'move-vendor-css', 'compile-stylus', 'move-templates'], () => {
+    var target = gulp.src(files.index),
+        sources = gulp.src([files.buildOrder, files + 'devCss/**.css']);
 
     return target
-        .pipe(inject(js, {relative: true}))
+        .pipe(inject(sources, {relative: true}))
         .pipe(gulp.dest(files.dist));
 });
 
@@ -97,4 +116,6 @@ gulp.task('watch-app', ['dev-build'], () => {
             .pipe(inject(js, {relative: true}))
             .pipe(gulp.dest(files.dist));
     });
+
+    gulp.watch(files.stylus.all, ['compile-stylus'])
 });
