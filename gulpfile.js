@@ -8,6 +8,8 @@ var gulp = require('gulp'),
     SystemBuilder = require('systemjs-builder'),
     uglify = require('gulp-uglify'),
     stylus = require('gulp-stylus'),
+    rename = require('gulp-rename'),
+    es = require('event-stream'),
 
     files = {
         dist: './dist/',
@@ -21,6 +23,7 @@ var gulp = require('gulp'),
             'node_modules/reflect-metadata/Reflect.js',
             'node_modules/systemjs/dist/system.src.js'
         ],
+        templates: 'app/**/**.html',
         buildOrder: [
             './dist/temp/shim.min.js',
             './dist/temp/zone.js',
@@ -51,7 +54,7 @@ gulp.task('compile-ts', () => {
 // Move required files to dist
 gulp.task('move-vendor-js', () => gulp.src(files.vendorJs).pipe(gulp.dest(files.dist + 'temp')));
 gulp.task('move-vendor-css', () => gulp.src(files.vendorCss).pipe(gulp.dest(files.dist + 'devCss')));
-gulp.task('move-templates', () => gulp.src(files.templates).pipe(gulp.dest(files.dist + 'templates')));
+gulp.task('move-templates', () => gulp.src(files.templates).pipe(rename({dirname: ''})).pipe(gulp.dest(files.dist + 'templates')));
 
 gulp.task('system-build', ['compile-ts'], () => {
     var builder = new SystemBuilder();
@@ -99,10 +102,11 @@ gulp.task('prod-build', ['clear-all', 'clean-extra'], () => {
  */
 gulp.task('dev-build', ['clear-all', 'system-build', 'move-vendor-js', 'move-vendor-css', 'compile-stylus', 'move-templates'], () => {
     var target = gulp.src(files.index),
-        sources = gulp.src([files.buildOrder, files + 'devCss/**.css']);
+        js = gulp.src(files.buildOrder, {read: false}),
+        css = gulp.src(files.dist + 'devCss/**.css');
 
     return target
-        .pipe(inject(sources, {relative: true}))
+        .pipe(inject(es.merge(js, css), {relative: true}))
         .pipe(gulp.dest(files.dist));
 });
 
@@ -117,5 +121,6 @@ gulp.task('watch-app', ['dev-build'], () => {
             .pipe(gulp.dest(files.dist));
     });
 
-    gulp.watch(files.stylus.all, ['compile-stylus'])
+    gulp.watch(files.stylus.all, ['compile-stylus']);
+    gulp.watch(files.templates, ['move-templates'])
 });
