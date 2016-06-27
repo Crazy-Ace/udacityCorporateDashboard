@@ -1,1 +1,19 @@
-<p>Map</p>
+<h3 class="center-align">Employees on Company Locations</h3>
+
+<div class="row">
+    <p class="center-align">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad deleniti dolores dolorum eaque eum laboriosam nam neque omnis placeat provident quasi reiciendis repudiandae sint sunt tenetur, totam voluptatem! Aperiam, laboriosam!</p>
+</div>
+
+<div class="row">
+    <div class="col s8">
+        <div id="map" class="z-depth-1" [fl-map-draw]="data" (bubbleClick)="empSelect($event)"></div>
+    </div>
+    <div class="col s4">
+        <ul>
+            <li *ngFor="let emp of employees">
+                <span>{{emp.name}}</span>
+                <span>{{emp.tilte}}</span>
+            </li>
+        </ul>
+    </div>
+</div>
