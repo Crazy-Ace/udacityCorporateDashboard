@@ -1,7 +1,7 @@
 var express = require('express'),
     path = require('path'),
     app = express(),
-    root = path.normalize(__dirname + '/dist/'),
+    root = path.normalize(__dirname),
     port = process.env.PORT || 5000;
 
 app.use(express.static(root));

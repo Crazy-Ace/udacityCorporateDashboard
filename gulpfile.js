@@ -13,20 +13,31 @@ var gulp = require('gulp'),
 
     files = {
         dist: './dist/',
-        index: './dist/index.html',
-        ts: './app/**/**.ts',
-        tsConfig: 'tsconfig.json',
-        system: 'system.config.js',
-        vendorJs: [
-            'node_modules/d3/d3.min.js',
-            'node_modules/topojson/build/topojson.min.js',
-            'node_modules/datamaps/dist/datamaps.hrv.min.js',
-            'node_modules/datamaps/dist/datamaps.world.min.js',
-            'node_modules/core-js/client/shim.min.js',
-            'node_modules/zone.js/dist/zone.js',
-            'node_modules/reflect-metadata/Reflect.js',
-            'node_modules/systemjs/dist/system.src.js'
-        ],
+        app: './app/',
+        index: 'index.html',
+        ts: {
+            all: './app/**/**.ts',
+            config: 'tsconfig.json'
+        },
+        system: {
+            config: 'system.config.js',
+            init: 'system.init.js'
+        },
+        vendor: {
+            js: [
+                'node_modules/d3/d3.min.js',
+                'node_modules/topojson/build/topojson.min.js',
+                'node_modules/datamaps/dist/datamaps.hrv.min.js',
+                'node_modules/datamaps/dist/datamaps.world.min.js',
+                'node_modules/core-js/client/shim.min.js',
+                'node_modules/zone.js/dist/zone.js',
+                'node_modules/reflect-metadata/Reflect.js',
+                'node_modules/systemjs/dist/system.src.js'
+            ],
+            css: [
+                'node_modules/materialize-css/dist/css/materialize.min.css'
+            ]
+        }, 
         templates: 'app/**/**.html',
         buildOrder: [
             './dist/temp/d3.min.js',
@@ -42,21 +53,47 @@ var gulp = require('gulp'),
         stylus: {
             main: './assets/stylus/style.styl',
             all: './assets/stylus/**/**.styl',
-        },
-        vendorCss: [
-            'node_modules/materialize-css/dist/css/materialize.min.css'
-        ]
+            compiled: 'assets/css/'
+        }
     };
 
-
 /*
-    Helper Tasks
+Helper Tasks
  */
 gulp.task('compile-ts', () => {
-    var tsProject = ts.createProject(files.tsConfig),
+    var tsProject = ts.createProject(files.ts.config),
         tsResult = tsProject.src().pipe(ts(tsProject));
 
-    return tsResult.js.pipe(gulp.dest(files.dist + 'temp'))
+    return tsResult.js.pipe(gulp.dest(files.app))
+});
+
+// Clear all the js and js.map files from the app folder
+gulp.task('clear-app', () => del([files.app + '**/**.js', files.app + '**/**.js.map']));
+
+gulp.task('stylus', () => {
+    return gulp.src(files.stylus.main)
+        .pipe(stylus())
+        .pipe(gulp.dest(files.stylus.compiled));
+});
+
+/*
+    Development build
+ */
+gulp.task('dev-build', ['stylus'], () => {
+
+    var js = files.vendor.js,
+        css = files.vendor.css;
+    // Add the system init and compiled stylus
+    js.push(files.system.init);
+    css.push(files.stylus.compiled + '/style.css');
+
+    var target = gulp.src(files.index),
+        jsSrc = gulp.src(js, {read: false}),
+        cssSrc = gulp.src(css, {read: false});
+
+    return target
+        .pipe(inject(es.merge(jsSrc, cssSrc)))
+        .pipe(gulp.dest('./'));
 });
 
 // Move required files to dist
@@ -71,7 +108,7 @@ gulp.task('system-build', ['compile-ts'], () => {
 });
 
 gulp.task('concat', ['system-build', 'move-vendor-js'], () => {
-    return gulp.src(files.buildOrder)
+    return gulp.src(files.vendorJs)
         .pipe(concat('bundle.js'))
         .pipe(gulp.dest(files.dist));
 });
@@ -86,12 +123,6 @@ gulp.task('clean-extra', ['minify'], () => del(files.dist + 'temp'));
 
 gulp.task('clear-all', () => del([files.dist + 'temp', files.dist + '**/**.js', files.dist + 'devCss', files.dist + 'templates']));
 
-gulp.task('compile-stylus', () => {
-    return gulp.src(files.stylus.main)
-        .pipe(stylus())
-        .pipe(gulp.dest(files.dist + 'devCss'));
-});
-
 
 /*
     Production Build
@@ -102,19 +133,6 @@ gulp.task('prod-build', ['clear-all', 'clean-extra'], () => {
 
     return target
         .pipe(inject(js, {relative: true}))
-        .pipe(gulp.dest(files.dist));
-});
-
-/*
-    Development Build
- */
-gulp.task('dev-build', ['clear-all', 'system-build', 'move-vendor-js', 'move-vendor-css', 'compile-stylus', 'move-templates'], () => {
-    var target = gulp.src(files.index),
-        js = gulp.src(files.buildOrder, {read: false}),
-        css = gulp.src(files.dist + 'devCss/**.css');
-
-    return target
-        .pipe(inject(es.merge(js, css), {relative: true}))
         .pipe(gulp.dest(files.dist));
 });
 
