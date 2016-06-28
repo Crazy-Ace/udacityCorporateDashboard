@@ -38,9 +38,7 @@ export class MapDirective {
                     10: '#311b92'
                 },
                 done: (datamap) => {
-                    datamap.svg.selectAll('.datamaps-bubble').on('click', (geography) => {
-                        console.log('bči: ', geography);
-                    });
+                    console.log(document.getElementsByTagName('circle'))
                 }
             });
 
