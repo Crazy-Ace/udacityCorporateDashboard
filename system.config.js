@@ -4,10 +4,8 @@
         '@angular': 'node_modules/@angular',
         'rxjs': 'node_modules/rxjs',
 
-        // @ngrx/core
         '@ngrx/core': 'node_modules/@ngrx/core',
-
-        // @ngrx/router
+        '@ngrx/store': 'node_modules/@ngrx/store',
         '@ngrx/router': 'node_modules/@ngrx/router',
 
         // @ngrx/router dependencies
@@ -20,9 +18,8 @@
     packages = {
         'app': { main: 'main.js', defaultExtension: 'js' },
         'rxjs': { defaultExtension: 'js' },
-        // @ngrx/core package
         '@ngrx/core': { main: 'index.js', defaultExtension: 'js'},
-        // @ngrx/router package
+        '@ngrx/store': { main: 'index.js', defaultExtension: 'js'},
         '@ngrx/router': {main: 'index.js', defaultExtension: 'js'},
         // @ngrx/router dependencies
         'path-to-regexp': {main: 'index.js', defaultExtension: 'js'},
