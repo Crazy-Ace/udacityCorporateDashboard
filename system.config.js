@@ -1,7 +1,6 @@
-
 (function(global) {
     var map = {
-        'app': 'dist/temp',
+        'app': 'app',
         '@angular': 'node_modules/@angular',
         'rxjs': 'node_modules/rxjs',
 

@@ -6,7 +6,7 @@ import {Employee} from './employee.interface';
 @Component({
     selector: 'fl-map',
     directives: [MapDirective],
-    templateUrl: 'templates/map.html'
+    templateUrl: 'app/pages/map/map.html'
 })
 
 export class MapComponent {

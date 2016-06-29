@@ -10,6 +10,7 @@ var gulp = require('gulp'),
     stylus = require('gulp-stylus'),
     rename = require('gulp-rename'),
     es = require('event-stream'),
+    cssnano = require('gulp-cssnano'),
 
     files = {
         dist: './dist/',
@@ -60,7 +61,7 @@ var gulp = require('gulp'),
 /*
 Helper Tasks
  */
-gulp.task('compile-ts', () => {
+gulp.task('compile-ts', ['clear-app'], () => {
     var tsProject = ts.createProject(files.ts.config),
         tsResult = tsProject.src().pipe(ts(tsProject));
 
@@ -84,6 +85,7 @@ gulp.task('dev-build', ['stylus'], () => {
     var js = files.vendor.js,
         css = files.vendor.css;
     // Add the system init and compiled stylus
+    js.push(files.system.config);
     js.push(files.system.init);
     css.push(files.stylus.compiled + '/style.css');
 
@@ -97,56 +99,53 @@ gulp.task('dev-build', ['stylus'], () => {
 });
 
 // Move required files to dist
-gulp.task('move-vendor-js', () => gulp.src(files.vendorJs).pipe(gulp.dest(files.dist + 'temp')));
-gulp.task('move-vendor-css', () => gulp.src(files.vendorCss).pipe(gulp.dest(files.dist + 'devCss')));
-gulp.task('move-templates', () => gulp.src(files.templates).pipe(rename({dirname: ''})).pipe(gulp.dest(files.dist + 'templates')));
+gulp.task('move-templates', () => gulp.src(files.templates).pipe(rename({dirname: ''})).pipe(gulp.dest(files.dist)));
 
 gulp.task('system-build', ['compile-ts'], () => {
     var builder = new SystemBuilder();
-    return builder.loadConfig(files.system)
+    return builder.loadConfig(files.system.config)
         .then(() => builder.buildStatic('app', files.dist + 'temp/ts.js'))
 });
 
-gulp.task('concat', ['system-build', 'move-vendor-js'], () => {
-    return gulp.src(files.vendorJs)
+gulp.task('concat-js', ['system-build'], () => {
+    var js = files.vendor.js;
+    js.push(files.dist + 'temp/ts.js');
+
+    return gulp.src(js)
         .pipe(concat('bundle.js'))
+        .pipe(uglify())
         .pipe(gulp.dest(files.dist));
 });
 
-gulp.task('minify', ['concat'], () => {
-    return gulp.src(files.dist + 'bundle.js')
-        .pipe(uglify())
-        .pipe(gulp.dest(files.dist))
+gulp.task('concat-css', ['stylus'], () => {
+    var css = files.vendor.css;
+        css.push(files.stylus.compiled + 'style.css');
+
+    return gulp.src(css)
+        .pipe(concat('style.css'))
+        .pipe(cssnano())
+        .pipe(gulp.dest(files.dist));
 });
 
-gulp.task('clean-extra', ['minify'], () => del(files.dist + 'temp'));
-
-gulp.task('clear-all', () => del([files.dist + 'temp', files.dist + '**/**.js', files.dist + 'devCss', files.dist + 'templates']));
+gulp.task('clean-extra', ['concat-js'], () => del(files.dist + 'temp'));
+gulp.task('clear-dist', () => del(files.dist));
 
 
 /*
     Production Build
  */
-gulp.task('prod-build', ['clear-all', 'clean-extra'], () => {
-    var target = gulp.src(files.index);
-        js = gulp.src(files.dist + '**.js');
+gulp.task('prod-build', ['clean-extra' , 'concat-css'], () => {
+    var target = gulp.src(files.index),
+        jsSrc = gulp.src(files.dist + '**.js', {read: false}),
+        cssSrc = gulp.src(files.dist + '**.css', {read: false});
 
     return target
-        .pipe(inject(js, {relative: true}))
-        .pipe(gulp.dest(files.dist));
+        .pipe(inject(es.merge(jsSrc, cssSrc)))
+        .pipe(gulp.dest('./'));
 });
 
 
-gulp.task('watch-app', () => {
-    gulp.watch(files.ts, ['system-build'], () => {
-        var target = gulp.src(files.index);
-        js = gulp.src(files.buildOrder);
-
-        return target
-            .pipe(inject(js, {relative: true}))
-            .pipe(gulp.dest(files.dist));
-    });
-
+gulp.task('watch', () => {
     gulp.watch(files.stylus.all, ['compile-stylus']);
-    gulp.watch(files.templates, ['move-templates'])
+    gulp.watch(files.ts.all, ['compile-ts'])
 });

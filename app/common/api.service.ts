@@ -13,7 +13,7 @@ export class ApiService {
         
         switch (name) {
             case 'locations':
-                url = 'data/locations.json';
+                url = 'assets/data/locations.json';
                 break;
         }
         
