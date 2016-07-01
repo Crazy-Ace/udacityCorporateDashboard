@@ -33,6 +33,7 @@
         'compiler',
         'core',
         'forms',
+        'http',
         'platform-browser',
         'platform-browser-dynamic',
         'upgrade'
