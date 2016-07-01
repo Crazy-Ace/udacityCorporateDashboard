@@ -7,10 +7,9 @@ import {Location} from '../models/location';
 export const locations = (state = [], action: Action) => {
     switch (action.type) {
         case 'LOAD_LOCATIONS':
-            return [
-                ...state,
-                action.payload
-            ];
+            let temp = [...state];
+            action.payload.forEach(a => temp.push(a));
+            return temp;
         case 'TOGGLE_ACTIVE':
             return state.map(location => Object.assign({}, location, {active: location.id === action.payload}));
         default:

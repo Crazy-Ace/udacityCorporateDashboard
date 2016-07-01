@@ -1,6 +1,6 @@
 <ul>
-    <li *ngFor="let a of store.select('locations') | async">
-        <span>{{}}</span>
+    <li *ngFor="let location of store.select('locations') | async">
+        <span>{{location.title}}</span>
     </li>
 </ul>
 
