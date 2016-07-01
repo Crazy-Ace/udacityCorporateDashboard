@@ -33,10 +33,8 @@
         'compiler',
         'core',
         'forms',
-        'http',
         'platform-browser',
         'platform-browser-dynamic',
-        'router',
         'upgrade'
     ];
     // Individual files (~300 requests):
