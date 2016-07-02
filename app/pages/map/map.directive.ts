@@ -10,7 +10,7 @@ export class MapDirective {
     ) {}
 
     @Input('fl-map-draw') set data(value: any) {
-        if (value) {
+        if (value.length) {
             let map = new Datamap({
                 element: this._el.nativeElement,
                 setProjection: (element) => {
@@ -42,29 +42,24 @@ export class MapDirective {
                 }
             });
 
-            let temp = [];
+            map.bubbles(value.map(a => {
+                let temp = a;
+                temp['radius'] = a.employees.length * 2;
+                temp['fillKey'] = Math.floor(Math.random() * 10) + 1;
 
-            value.forEach(a => {
-                temp.push({
-                    latitude: a.latitude,
-                    longitude: a.longitude,
-                    name: a.name,
-                    fillKey: Math.floor(Math.random() * 10) + 1 ,
-                    radius: a.employees.length * 2
-                });
-            });
-
-            map.bubbles(temp, {
+                return temp;
+            }), {
                 popupTemplate: (geo, data) => `
                     <div class="hover_block">
+                        <span>Company Name: ${data.title}</span>
                         <span>Location: ${data.name}</span>
-                        <span>Employees: ${data.radius}</span>
+                        <span>Employees: ${data.employees.length}</span>
                     </div>`
             });
         }
     }
 
-    @Output() bubbleClick: EventEmitter = new EventEmitter();
+    @Output() bubbleClick: EventEmitter<any> = new EventEmitter();
 
     clicked(loc: string) {
         this.bubbleClick.emit(loc);

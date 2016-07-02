@@ -1,1 +1,28 @@
-<p>Issues</p>
+<div class="row">
+    <div class="col s12">
+        <h3 class="center-align">Open Issues</h3>
+    </div>
+</div>
+<div class="row">
+    <div class="input-field col s6">
+        <i class="material-icons prefix">search</i>
+        <input placeholder="Search" type="text" class="validate" [(ngModel)]="search">
+    </div>
+</div>
+<div class="row">
+    <table class="bordered highlight">
+        <thead>
+            <tr>
+                <th *ngFor="let t of ths; let i = index" (click)="sort(i)" [class.active]="t.active">{{t.title}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let issue of store.select('issues') | async | search:[search, searchCriteria, true]">
+                <td>{{issue.title}}</td>
+                <td>{{issue.description}}</td>
+                <td>{{issue.author}}</td>
+                <td>{{issue.createdOn | date:['MMM dd HH:mm']}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

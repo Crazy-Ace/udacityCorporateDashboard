@@ -19,7 +19,6 @@ export class MapComponent implements OnInit {
 
     ngOnInit(): void {
         this._api.send('locations').subscribe(a => {
-            console.log('ovo je dobiveno: ', a);
             this.store.dispatch({type: 'LOAD_LOCATIONS', payload: a})
         });
     }

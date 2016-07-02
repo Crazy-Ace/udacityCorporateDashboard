@@ -15,6 +15,9 @@ export class ApiService {
             case 'locations':
                 url = 'assets/data/locations.json';
                 break;
+            case 'issues':
+                url = 'assets/data/issues.json';
+                break;
         }
         
         let options = {
