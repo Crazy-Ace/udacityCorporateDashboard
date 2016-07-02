@@ -13,7 +13,13 @@
     <table class="bordered highlight">
         <thead>
             <tr>
-                <th *ngFor="let t of ths; let i = index" (click)="sort(i)" [class.active]="t.active">{{t.title}}</th>
+                <th *ngFor="let t of ths; let i = index" (click)="sort(i)" [class.active]="t.active">
+                    <span>{{t.title}}</span>
+                    <span [hidden]="!t.active">
+                        <i class="material-icons prefix">{{t.asc ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}</i>
+                    </span>
+                </th>
+                <th>Open</th>
             </tr>
         </thead>
         <tbody>
@@ -22,6 +28,7 @@
                 <td>{{issue.description}}</td>
                 <td>{{issue.author}}</td>
                 <td>{{issue.createdOn | date:['MMM dd HH:mm']}}</td>
+                <td class="clickable" (click)="toggleOpen(issue)"><i class="material-icons prefix">{{issue.open ? 'done' : 'close'}}</i></td>
             </tr>
         </tbody>
     </table>

@@ -3,6 +3,7 @@ import {ApiService} from '../../common/api.service';
 import {Store} from '@ngrx/store';
 import {AsyncPipe, DatePipe} from '@angular/common';
 import {SearchPipe} from '../../common/pipes/search.pipe';
+import {Issue} from '../../common/models/issue';
 
 @Component({
     selector: 'fl-issues',
@@ -62,6 +63,10 @@ export class IssuesComponent implements OnInit {
         });
 
         this.store.dispatch({type: 'SORT_ISSUES', payload: {key: this.ths[index].key, asc: this.ths[index].asc}})
+    }
+
+    toggleOpen(issue: Issue) {
+        this.store.dispatch({type: 'TOGGLE_OPEN_ISSUE', payload: issue})
     }
 
 }

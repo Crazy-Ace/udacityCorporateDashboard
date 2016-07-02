@@ -11,6 +11,7 @@ var gulp = require('gulp'),
     rename = require('gulp-rename'),
     es = require('event-stream'),
     cssnano = require('gulp-cssnano'),
+    autoprefixer = require('gulp-autoprefixer'),
 
     files = {
         dist: './dist/',
@@ -74,6 +75,10 @@ gulp.task('clear-app', () => del([files.app + '**/**.js', files.app + '**/**.js.
 gulp.task('stylus', () => {
     return gulp.src(files.stylus.main)
         .pipe(stylus())
+        .pipe(autoprefixer({
+            browsers: ['last 2 versions'],
+            cascade: false
+        }))
         .pipe(gulp.dest(files.stylus.compiled));
 });
 

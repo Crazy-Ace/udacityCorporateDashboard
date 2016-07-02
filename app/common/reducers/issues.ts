@@ -21,6 +21,13 @@ export const issues = (state = [], action: Action) => {
             if (action.payload.key === 'createdOn') toUse = dateSort;
 
             return state.sort((a, b) => toUse(a, b, action.payload.key, action.payload.asc));
+
+        case 'TOGGLE_OPEN_ISSUE':
+            return state.map(issue => {
+                if (issue.id === action.payload.id) return Object.assign({}, issue, {open: !issue.open});
+                return issue;
+            });
+
         default:
             return state;
     }
@@ -34,10 +41,15 @@ function textSort(i1: Issue, i2: Issue, key: string, asc: boolean): number {
     let a = i1[key].toUpperCase();
     let b = i2[key].toUpperCase();
 
-    return
+    if (asc) {
+        if (a < b) return -1;
+        if (a > b) return 1;
+    }
 
-    if (a < b) return -1;
-    if (a > b) return 1;
+    else {
+        if (a > b) return -1;
+        if (a < b) return 1;
+    }
     return 0;
 }
 

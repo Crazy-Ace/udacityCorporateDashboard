@@ -1,56 +1,74 @@
 [
   {
+    "id": 1,
     "title": "Bug with submit",
     "description": "This is the description of the issue",
     "createdOn": "October 2, 2016 11:13:00",
-    "author": "Agent 47"
+    "author": "John Smith",
+    "open": true
   },
   {
+    "id": 2,
     "title": "Error on upload",
     "description": "This is the description of the issue",
     "createdOn": "October 2, 2016 11:13:00",
-    "author": "Sitting Bull"
+    "author": "Sitting Bull",
+    "open": false
   },
   {
+    "id": 3,
     "title": "Typo in title",
     "description": "This is the description of the issue",
     "createdOn": "October 2, 2016 11:13:00",
-    "author": "John Smith"
+    "author": "John Smith",
+    "open": true
   },
   {
+    "id": 4,
     "title": "Error in received json",
     "description": "This is the description of the issue",
     "createdOn": "October 2, 2016 11:13:00",
-    "author": "Genghis Khan"
+    "author": "Genghis Khan",
+    "open": false
   },
   {
+    "id": 5,
     "title": "HTTP request error",
     "description": "This is the description of the issue",
     "createdOn": "October 5, 2016 08:00:00",
-    "author": "Elvis Presley"
+    "author": "Elvis Presley",
+    "open": true
   },
   {
+    "id": 6,
     "title": "Bug on the site map",
     "description": "This is the description of the issue",
     "createdOn": "October 14, 2016 16:20:00",
-    "author": "Alexander Hamilton"
+    "author": "Alexander Hamilton",
+    "open": false
   },
   {
+    "id": 7,
     "title": "Issue with validation",
     "description": "This is the description of the issue",
     "createdOn": "October 1, 2016 07:30:00",
-    "author": "Frank Sinatra"
+    "author": "Frank Sinatra",
+    "open": true
   },
   {
+    "id": 8,
     "title": "Table doesn't sort",
     "description": "This is the description of the issue",
     "createdOn": "October 27, 2016 12:00:00",
-    "author": "John Show"
+    "author": "John Show",
+    "open": false
   },
   {
+    "id": 9,
     "title": "URL isn't correct",
     "description": "This is the description of the issue",
     "createdOn": "October 7, 2016 11:13:00",
-    "author": "Miky Johns"
+    "author": "Miky Johns",
+    "open": false
   }
 ]
