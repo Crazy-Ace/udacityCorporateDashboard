@@ -18,6 +18,9 @@ export class ApiService {
             case 'issues':
                 url = 'assets/data/issues.json';
                 break;
+            case 'customers':
+                url = 'assets/data/customers.csv';
+                break;
         }
         
         let options = {
@@ -29,6 +32,14 @@ export class ApiService {
         };
 
         return this.http.request(new Request(options))
-            .map(res => res.json())
+            .map(res => {
+                let toReturn = res;
+
+                try {
+                    toReturn = res.json();
+                } catch (err) {}
+
+                return toReturn;
+            })
     }
 }

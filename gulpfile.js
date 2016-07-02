@@ -28,6 +28,7 @@ var gulp = require('gulp'),
         vendor: {
             js: [
                 'node_modules/d3/d3.min.js',
+                'node_modules/c3/c3.min.js',
                 'node_modules/topojson/build/topojson.min.js',
                 'node_modules/datamaps/dist/datamaps.hrv.min.js',
                 'node_modules/datamaps/dist/datamaps.world.min.js',
@@ -37,7 +38,8 @@ var gulp = require('gulp'),
                 'node_modules/systemjs/dist/system.src.js'
             ],
             css: [
-                'node_modules/materialize-css/dist/css/materialize.min.css'
+                'node_modules/materialize-css/dist/css/materialize.min.css',
+                'node_modules/c3/c3.min.css'
             ]
         }, 
         templates: 'app/**/**.html',
