@@ -1,4 +1,4 @@
-import {Component, ViewChild, OnInit} from '@angular/core';
+import {Component, ViewChild, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {Store} from '@ngrx/store';
 
 declare var Datamap: any;
@@ -33,6 +33,7 @@ export class MapComponent implements OnInit {
     private _draw() {
         this.map = new Datamap({
             element: this.mapEl.nativeElement,
+            responsive: true,
             setProjection: (element) => {
                 let projection = d3.geo.equirectangular()
                         .center([30, 50])
@@ -69,7 +70,7 @@ export class MapComponent implements OnInit {
             return temp;
         }), {
             popupTemplate: (geo, data) => `
-                <div class="hover_block">
+                <div class="hover_block" #bubble>
                     <span>Company Name: ${data.title}</span>
                     <span>Location: ${data.name}</span>
                     <span>Employees: ${data.employees.length}</span>
