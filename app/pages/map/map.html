@@ -6,7 +6,7 @@
 </div>
 <div class="row">
     <div class="col s8">
-        <div id="map" class="z-depth-1" [fl-map-draw]="store.select('locations') | async" (bubbleClick)="empSelect($event)"></div>
+        <div #map class="z-depth-1 map"></div>
     </div>
     <div class="col s4">
 

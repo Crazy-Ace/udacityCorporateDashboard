@@ -77,8 +77,6 @@ export class ReportComponent implements OnInit {
     }
 
     private _drawBar(data): void {
-        console.log(data);
-
         let column = ['issues'],
             dates = [];
 
