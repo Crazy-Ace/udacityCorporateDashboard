@@ -4,7 +4,6 @@
   "description": "A dashboard project built for the Udacity Senior Web Developer Nanodegree. The project uses Angular2 on the frontend and Node on the backend.",
   "main": "index.js",
   "scripts": {
-    "postinstall": "typings install",
     "start": "node server.js"
   },
   "keywords": [
