@@ -69,11 +69,11 @@ export class MapComponent implements OnInit {
             return temp;
         }), {
             popupTemplate: (geo, data) => `
-                    <div class="hover_block">
-                        <span>Company Name: ${data.title}</span>
-                        <span>Location: ${data.name}</span>
-                        <span>Employees: ${data.employees.length}</span>
-                    </div>`
+                <div class="hover_block">
+                    <span>Company Name: ${data.title}</span>
+                    <span>Location: ${data.name}</span>
+                    <span>Employees: ${data.employees.length}</span>
+                </div>`
         });
     }
 }   
