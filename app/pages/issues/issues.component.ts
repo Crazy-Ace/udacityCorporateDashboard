@@ -1,5 +1,4 @@
-import {Component, OnInit} from '@angular/core';
-import {ApiService} from '../../common/api.service';
+import {Component} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {AsyncPipe, DatePipe} from '@angular/common';
 import {SearchPipe} from '../../common/pipes/search.pipe';
@@ -11,7 +10,7 @@ import {Issue} from '../../common/models/issue';
     templateUrl: 'app/pages/issues/issues.html'
 })
 
-export class IssuesComponent implements OnInit {
+export class IssuesComponent {
 
     search: string;
     searchCriteria: string[] = ['title', 'author'];
@@ -43,15 +42,8 @@ export class IssuesComponent implements OnInit {
     ];
 
     constructor(
-        public store: Store<any>,
-        private _api: ApiService
+        public store: Store<any>
     ) {}
-
-    ngOnInit(): void {
-        this._api.send('issues').subscribe(a => {
-            this.store.dispatch({type: 'LOAD_ISSUES', payload: a})
-        });
-    }
 
     sort(index: number) {
         this.ths.forEach((a, i) => {

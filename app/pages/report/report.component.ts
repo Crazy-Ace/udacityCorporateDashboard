@@ -1,14 +1,11 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {ApiService} from '../../common/api.service';
-import {CSVService} from '../../common/csv.service';
 import {AsyncPipe} from '@angular/common';
 
 declare var c3: any;
 
 @Component({
     selector: 'fl-report',
-    providers: [CSVService],
     pipes: [AsyncPipe],
     templateUrl: 'app/pages/report/report.html'
 })
@@ -16,29 +13,31 @@ declare var c3: any;
 export class ReportComponent implements OnInit {
 
     @ViewChild('line') lineEl: any;
+    @ViewChild('bar') barEl: any;
 
     lineGraph: any;
+    barGraph: any;
 
     constructor(
-        public store: Store<any>,
-        private _api: ApiService,
-        private _csv: CSVService
+        public store: Store<any>
     ) {}
 
     private _customersListener: any;
+    private _issuesListener: any;
 
     ngOnInit(): void {
-        this._api.send('customers').subscribe(a => {
-            this.store.dispatch({type: 'LOAD_CUSTOMERS', payload: this._csv.parse(a['_body'])})
-        });
-
         this._customersListener = this.store.select('customers').subscribe(a => {
             if (a.length) this._drawLine(a);
+        });
+
+        this._issuesListener = this.store.select('issues').subscribe(a => {
+            if (a.length) this._drawBar(a.filter(b => b.open));
         })
     }
 
     ngOnDestroy(): void {
         this._customersListener.unsubscribe();
+        this._issuesListener.unsubscribe();
     }
 
     private _drawLine(data): void {
@@ -52,12 +51,13 @@ export class ReportComponent implements OnInit {
 
         dates.forEach(a => column.push(data.filter(b => a === b.createdOn).length));
 
-        console.log(Math.floor(dates.length / 2));
-
         this.lineGraph = c3.generate({
             bindto: this.lineEl.nativeElement,
             data: {
-                columns: [column]
+                columns: [column],
+                colors: {
+                    customers: '#0d47a1',
+                },
             },
             axis: {
                 x: {
@@ -68,6 +68,44 @@ export class ReportComponent implements OnInit {
                         multiline: false
                     },
                     height: 35
+                }
+            },
+            legend: {
+                show: false
+            }
+        });
+    }
+
+    private _drawBar(data): void {
+        console.log(data);
+
+        let column = ['issues'],
+            dates = [];
+
+        data.forEach(a => {
+            if (dates.indexOf(a.createdOn.toDateString()) === -1) dates.push(a.createdOn.toDateString());
+        });
+
+        dates.forEach(a => column.push(data.filter(b => a === b.createdOn.toDateString()).length));
+
+        this.barGraph = c3.generate({
+            bindto: this.barEl.nativeElement,
+            data: {
+                columns: [column],
+                colors: {
+                    issues: '#1b5e20',
+                },
+                type: 'bar',
+            },
+            axis: {
+                x: {
+                    type: 'category',
+                    categories: dates,
+                    tick: {
+                        rotate: -35,
+                        multiline: false
+                    },
+                    height: 65
                 }
             },
             legend: {

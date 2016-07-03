@@ -1,6 +1,5 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {MapDirective} from './map.directive';
-import {ApiService} from '../../common/api.service';
 import {Store} from '@ngrx/store';
 import {AsyncPipe} from '@angular/common';
 
@@ -11,17 +10,10 @@ import {AsyncPipe} from '@angular/common';
     templateUrl: 'app/pages/map/map.html'
 })
 
-export class MapComponent implements OnInit {
+export class MapComponent {
     constructor(
-        public store: Store<any>,
-        private _api: ApiService
+        public store: Store<any>
     ) {}
-
-    ngOnInit(): void {
-        this._api.send('locations').subscribe(a => {
-            this.store.dispatch({type: 'LOAD_LOCATIONS', payload: a})
-        });
-    }
 
     // constructor(
     //     private _api: ApiService
