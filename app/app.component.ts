@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import {ApiService} from './common/api.service';
 import {CSVService} from './common/csv.service';
 import {Store} from '@ngrx/store';
@@ -9,7 +9,10 @@ import {Store} from '@ngrx/store';
     templateUrl: './app/app.html'
 })
 
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
+
+    private _pullInterval: any;
+
     constructor(
         private _store: Store<any>,
         private _api: ApiService,
@@ -17,6 +20,18 @@ export class AppComponent implements OnInit {
     ) {}
     
     ngOnInit(): void {
+        this._loadData();
+
+        this._pullInterval = setInterval(() => {
+            this._loadData();
+        }, 20000)
+    }
+
+    ngOnDestroy(): void {
+        clearInterval(this._pullInterval)
+    }
+
+    private _loadData() {
         // Load all the required data
         this._api.send('issues').subscribe(a => {
             this._store.dispatch({type: 'LOAD_ISSUES', payload: a})
