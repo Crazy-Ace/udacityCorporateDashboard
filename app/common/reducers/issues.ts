@@ -11,6 +11,7 @@ export const issues = (state = [], action: Action) => {
             action.payload.forEach(a => {
                 let final = a;
                 final.createdOn = new Date(a.createdOn);
+                if (final.closedOn) final.closedOn = new Date(a.closedOn);
                 temp.push(final)
             });
             return temp;
@@ -18,13 +19,22 @@ export const issues = (state = [], action: Action) => {
         case 'SORT_ISSUES':
 
             let toUse = textSort;
-            if (action.payload.key === 'createdOn') toUse = dateSort;
+            if (action.payload.key === 'createdOn' || action.payload.key === 'closedOn') toUse = dateSort;
 
             return state.sort((a, b) => toUse(a, b, action.payload.key, action.payload.asc));
 
         case 'TOGGLE_OPEN_ISSUE':
             return state.map(issue => {
-                if (issue.id === action.payload.id) return Object.assign({}, issue, {open: !issue.open});
+                if (issue.id === action.payload.id) {
+                    if (issue.open) return Object.assign({}, issue, {open: false, employeeName: 'flauc', closedOn: new Date()});
+                    else {
+                        delete issue.employeeName;
+                        delete issue.closedOn;
+
+                        return Object.assign({}, issue, {open: true});
+                    }
+                }
+
                 return issue;
             });
 
@@ -38,8 +48,14 @@ export function getActive(id: string) {
 }
 
 function textSort(i1: Issue, i2: Issue, key: string, asc: boolean): number {
+
+    if (!i1[key]) return -1;
+    if (!i2[key]) return 1;
+
     let a = i1[key].toUpperCase();
     let b = i2[key].toUpperCase();
+
+
 
     if (asc) {
         if (a < b) return -1;
@@ -54,5 +70,7 @@ function textSort(i1: Issue, i2: Issue, key: string, asc: boolean): number {
 }
 
 function dateSort(i1: Issue, i2: Issue, key: string, asc: boolean): number {
+    if (!i1[key]) return -1;
+    if (!i2[key]) return 1;
     return asc ? i1[key] - i2[key] : i2[key] - i1[key];
 }

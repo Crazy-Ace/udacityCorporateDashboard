@@ -1,7 +1,10 @@
 export interface Issue {
     id: number
-    title: string
+    createdOn: string
+    customerName: string
+    customerEmail: string
     description: string
-    createdOn: Date
-    author: string
+    open: boolean
+    closedOn?: string
+    employeeName: string
 }

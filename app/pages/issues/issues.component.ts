@@ -13,11 +13,23 @@ import {Issue} from '../../common/models/issue';
 export class IssuesComponent {
 
     search: string;
-    searchCriteria: string[] = ['title', 'author'];
+    searchCriteria: string[] = ['customerName', 'customerEmail', 'employee'];
     ths: any[] = [
         {
-            title: 'Title',
-            key: 'title',
+            title: 'Submission Date',
+            key: 'createdOn',
+            active: false,
+            asc: true
+        },
+        {
+            title: 'Customer Name',
+            key: 'customerName',
+            active: false,
+            asc: true
+        },
+        {
+            title: 'Customer Email',
+            key: 'customerEmail',
             active: false,
             asc: true
         },
@@ -28,14 +40,14 @@ export class IssuesComponent {
             asc: true
         },
         {
-            title: 'Author',
-            key: 'author',
+            title: 'Closed On',
+            key: 'closedOn',
             active: false,
             asc: true
         },
         {
-            title: 'Created On',
-            key: 'createdOn',
+            title: 'Employee',
+            key: 'employeeName',
             active: false,
             asc: true
         }

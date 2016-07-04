@@ -24,10 +24,12 @@
         </thead>
         <tbody>
             <tr *ngFor="let issue of store.select('issues') | async | search:[search, searchCriteria, true]">
-                <td>{{issue.title}}</td>
+                <td>{{issue.createdOn | date:['MMM dd']}}</td>
+                <td>{{issue.customerName}}</td>
+                <td>{{issue.customerEmail}}</td>
                 <td>{{issue.description}}</td>
-                <td>{{issue.author}}</td>
-                <td>{{issue.createdOn | date:['MMM dd HH:mm']}}</td>
+                <td>{{issue?.closedOn | date:['MMM dd']}}</td>
+                <td>{{issue?.employeeName}}</td>
                 <td class="clickable" (click)="toggleOpen(issue)"><i class="material-icons prefix">{{issue.open ? 'done' : 'close'}}</i></td>
             </tr>
         </tbody>
