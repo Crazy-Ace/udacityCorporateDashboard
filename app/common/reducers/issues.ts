@@ -23,6 +23,9 @@ export const issues = (state = [], action: Action) => {
 
             return state.sort((a, b) => toUse(a, b, action.payload.key, action.payload.asc));
 
+        case 'CLEAR_ISSUES':
+            return state = [];
+
         case 'TOGGLE_OPEN_ISSUE':
             return state.map(issue => {
                 if (issue.id === action.payload.id) {

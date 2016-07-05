@@ -7,7 +7,8 @@ export const customers = (state = [], action: Action) => {
             let temp = [...state];
             action.payload.forEach(a => temp.push(a));
             return temp;
-
+        case 'CLEAR_CUSTOMERS':
+            return state = [];
         default:
             return state;
     }

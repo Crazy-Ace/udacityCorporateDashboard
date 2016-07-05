@@ -24,7 +24,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
         this._pullInterval = setInterval(() => {
             this._loadData();
-        }, 20000)
+        }, 1000)
     }
 
     ngOnDestroy(): void {
@@ -34,14 +34,17 @@ export class AppComponent implements OnInit, OnDestroy {
     private _loadData() {
         // Load all the required data
         this._api.send('issues').subscribe(a => {
-            this._store.dispatch({type: 'LOAD_ISSUES', payload: a})
+            this._store.dispatch({type: 'CLEAR_ISSUES', payload: null});
+            this._store.dispatch({type: 'LOAD_ISSUES', payload: a});
         });
 
         this._api.send('customers').subscribe(a => {
+            this._store.dispatch({type: 'CLEAR_LOCATIONS', payload: null});
             this._store.dispatch({type: 'LOAD_CUSTOMERS', payload: this._csv.parse(a['_body'])})
         });
 
         this._api.send('locations').subscribe(a => {
+            this._store.dispatch({type: 'CLEAR_LOCATIONS', payload: null});
             this._store.dispatch({type: 'LOAD_LOCATIONS', payload: a})
         });
     }

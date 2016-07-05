@@ -10,6 +10,8 @@ export const locations = (state = [], action: Action) => {
             let temp = [...state];
             action.payload.forEach(a => temp.push(a));
             return temp;
+        case 'CLEAR_LOCATIONS':
+            return state = [];
         case 'TOGGLE_ACTIVE':
             return state.map(location => Object.assign({}, location, {active: location.id === action.payload}));
         default:
