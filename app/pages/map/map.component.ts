@@ -1,5 +1,6 @@
 import {Component, ViewChild, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {Store} from '@ngrx/store';
+import {equalityTest} from '../../common/equality.test';
 
 declare var Datamap: any;
 declare var d3: any;
@@ -27,8 +28,35 @@ export class MapComponent implements OnInit {
         this._draw();
 
         this._locationsListener = this._store.select('locations').subscribe(a => {
-            this.map.bubbles([]);
-            this._addBubbles(a)
+            console.log(a);
+            if (a && a.length) {
+                let change = false;
+
+                if (!this._locations) {
+                    this._locations = a;
+                    change = true;
+                } else {
+
+                    if (this._locations.length !== a.length) {
+                        change = true;
+                        this._locations = a;
+                    }
+                    else {
+                        for (let i = 0; i < a.length; i++) {
+                            if (!equalityTest(this._locations[i], a[i])) {
+                                this._locations = a;
+                                change = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (change) {
+                    this.map.bubbles([]);
+                    this._addBubbles(this._locations)
+                }
+            }
         })
     }
 
@@ -66,7 +94,7 @@ export class MapComponent implements OnInit {
     private _addBubbles(data): void {
         this.map.bubbles(data.map(a => {
             let temp = a;
-            temp['radius'] = a.employees.length * 2;
+            temp['radius'] = a.employees;
             temp['fillKey'] = Math.floor(Math.random() * 10) + 1;
 
             return temp;
@@ -75,7 +103,7 @@ export class MapComponent implements OnInit {
                 <div class="hover_block" #bubble>
                     <span>Company Name: ${data.title}</span>
                     <span>Location: ${data.name}</span>
-                    <span>Employees: ${data.employees.length}</span>
+                    <span>Employees: ${data.employees}</span>
                 </div>`
         });
     }

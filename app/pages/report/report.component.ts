@@ -73,7 +73,7 @@ export class ReportComponent implements OnInit {
                     }
                     else {
                         for (let i = 0; i < a.length; i++) {
-                            if (!equalityTest(this._issues, a)) {
+                            if (!equalityTest(this._issues[i], a[i])) {
                                 this._issues = a;
                                 change = true;
                                 break;
