@@ -3,19 +3,36 @@ import 'rxjs/add/operator/map';
 import {Observable} from 'rxjs/Observable';
 import {Action} from '@ngrx/store';
 import {Issue} from '../models/issue';
+import {equalityTest} from '../equality.test';
 
 export const issues = (state = [], action: Action) => {
     switch (action.type) {
         case 'LOAD_ISSUES':
             let temp = [...state];
-            action.payload.forEach(a => {
-                let final = a;
-                final.createdOn = new Date(a.createdOn);
-                if (final.closedOn) final.closedOn = new Date(a.closedOn);
-                temp.push(final)
-            });
+            if (Array.isArray(action.payload)) {
+                action.payload.forEach(a => {
+                    let final = a;
+                    final.createdOn = new Date(a.createdOn);
+                    if (final.closedOn) final.closedOn = new Date(a.closedOn);
+                    temp.push(final)
+                });  
+            }
             return temp;
-
+        
+        case 'UPDATE_ISSUES':
+            let temp1 = [...state];
+            if (Array.isArray(action.payload)) {
+                action.payload.forEach(a => {
+                    let holder = temp1.find(b => b.id === a.id);
+                    a.createdOn = new Date(a.createdOn);
+                    if (a.closedOn) a.closedOn = new Date(a.closedOn);
+                    if (holder) {
+                        if (!equalityTest(holder, a)) temp1[temp1.findIndex(b => b.id === a.id)] = a;
+                    }
+                    else temp1.push(a);
+                });   
+            }
+            return temp1;
         case 'SORT_ISSUES':
 
             let toUse = textSort;

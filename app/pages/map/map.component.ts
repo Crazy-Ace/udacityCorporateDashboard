@@ -15,17 +15,19 @@ export class MapComponent implements OnInit {
 
     map: any;
 
+    private _locationsListener: any;
+    private _locations: any;
+
     constructor(
         private _store: Store<any>
     ) {}
-
-    private _locationsListener: any;
 
     ngOnInit(): void {
         // Draw the map
         this._draw();
 
         this._locationsListener = this._store.select('locations').subscribe(a => {
+            this.map.bubbles([]);
             this._addBubbles(a)
         })
     }

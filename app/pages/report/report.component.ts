@@ -1,6 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {AsyncPipe} from '@angular/common';
+import {equalityTest} from '../../common/equality.test';
 
 declare var c3: any;
 
@@ -18,20 +19,71 @@ export class ReportComponent implements OnInit {
     lineGraph: any;
     barGraph: any;
 
+    private _customersListener: any;
+    private _issuesListener: any;
+
+    private _customers: any;
+    private _issues: any;
+
     constructor(
         public store: Store<any>
     ) {}
 
-    private _customersListener: any;
-    private _issuesListener: any;
-
     ngOnInit(): void {
         this._customersListener = this.store.select('customers').subscribe(a => {
-            if (a.length) this._drawLine(a);
+            if (a && a.length) {
+                let change = false;
+
+                if (!this._customers) {
+                    this._customers = a;
+                    change = true;
+                } else {
+
+                    if (this._customers.length !== a.length) {
+                        change = true;
+                        this._customers = a;
+                    }
+                    else {
+                        for (let i = 0; i < a.length; i++) {
+                            if (!equalityTest(this._customers, a)) {
+                                this._customers = a;
+                                change = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (change) this._drawLine(a);
+            }
         });
 
         this._issuesListener = this.store.select('issues').subscribe(a => {
-            if (a.length) this._drawBar(a.filter(b => b.open));
+            if (a && a.length) {
+                let change = false;
+
+                if (!this._issues) {
+                    this._issues = a;
+                    change = true;
+                } else {
+
+                    if (this._issues.length !== a.length) {
+                        change = true;
+                        this._issues = a;
+                    }
+                    else {
+                        for (let i = 0; i < a.length; i++) {
+                            if (!equalityTest(this._issues, a)) {
+                                this._issues = a;
+                                change = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (change) this._drawBar(a.filter(b => b.open));
+            }
         })
     }
 

@@ -20,32 +20,20 @@ export class AppComponent implements OnInit, OnDestroy {
     ) {}
     
     ngOnInit(): void {
-        this._loadData();
 
-        this._pullInterval = setInterval(() => {
-            this._loadData();
-        }, 1000)
+        // Load all the required data
+        this._load('LOAD');
+
+        this._pullInterval = setInterval(() => this._load('UPDATE'), 5000)
     }
 
     ngOnDestroy(): void {
         clearInterval(this._pullInterval)
     }
 
-    private _loadData() {
-        // Load all the required data
-        this._api.send('issues').subscribe(a => {
-            this._store.dispatch({type: 'CLEAR_ISSUES', payload: null});
-            this._store.dispatch({type: 'LOAD_ISSUES', payload: a});
-        });
-
-        this._api.send('customers').subscribe(a => {
-            this._store.dispatch({type: 'CLEAR_LOCATIONS', payload: null});
-            this._store.dispatch({type: 'LOAD_CUSTOMERS', payload: this._csv.parse(a['_body'])})
-        });
-
-        this._api.send('locations').subscribe(a => {
-            this._store.dispatch({type: 'CLEAR_LOCATIONS', payload: null});
-            this._store.dispatch({type: 'LOAD_LOCATIONS', payload: a})
-        });
+    private _load(base: string): void {
+        this._api.send('issues').subscribe(a => this._store.dispatch({type: `${base}_ISSUES`, payload: a}));
+        this._api.send('customers').subscribe(a => this._store.dispatch({type: `${base}_CUSTOMERS`, payload: this._csv.parse(a['_body'])}));
+        this._api.send('locations').subscribe(a => this._store.dispatch({type: `${base}_LOCATIONS`, payload: a}));
     }
 }
