@@ -92,7 +92,7 @@ export class ReportComponent implements OnInit {
 
             }
             else {
-                this._customers = [];
+                this._issues = [];
                 this._drawBar([]);
             }
         })
