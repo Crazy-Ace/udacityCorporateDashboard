@@ -14,6 +14,7 @@ export const customers = (state = [], action: Action) => {
                 action.payload.forEach(a => {
                     let holder = temp1.find(b => b.id === a.id);
                     if (holder) {
+                        console.log(!equalityTest(holder, a));
                         if (!equalityTest(holder, a)) temp1[temp1.findIndex(b => b.id === a.id)] = a;
                     }
                     else temp1.push(a)
