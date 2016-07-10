@@ -11,13 +11,18 @@ export const customers = (state = [], action: Action) => {
         case 'UPDATE_CUSTOMERS':
             let temp1 = [...state];
             if (Array.isArray(action.payload)) {
-                action.payload.forEach(a => {
-                    let holder = temp1.find(b => b.id === a.id);
+                temp1.forEach((a, i) => {
+                    let holder = action.payload.find(b => b.id === a.id);
                     if (holder) {
-                        if (!equalityTest(holder, a)) temp1[temp1.findIndex(b => b.id === a.id)] = a;
+                        if (!equalityTest(holder, a)) temp1[i] = holder;
+                        action.payload[action.payload.findIndex(b => b.id === a.id)]['checked'] = true;
                     }
-                    else temp1.push(a)
+                    else temp1.splice(i, 1);
                 });
+
+                action.payload.forEach(a => {
+                    if (!a.checked) temp1.push(a)
+                })
             }
             return temp1;
         case 'CLEAR_CUSTOMERS':

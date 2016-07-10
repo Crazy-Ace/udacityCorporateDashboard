@@ -28,7 +28,6 @@ export class MapComponent implements OnInit {
         this._draw();
 
         this._locationsListener = this._store.select('locations').subscribe(a => {
-            console.log(a);
             if (a && a.length) {
                 let change = false;
 
