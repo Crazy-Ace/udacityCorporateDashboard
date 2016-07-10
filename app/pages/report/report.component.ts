@@ -32,6 +32,7 @@ export class ReportComponent implements OnInit {
     ngOnInit(): void {
         this._customersListener = this.store.select('customers').subscribe(a => {
             if (a && a.length) {
+                console.log('vlu', a);
                 let change = false;
 
                 if (!this._customers) {
@@ -55,6 +56,11 @@ export class ReportComponent implements OnInit {
                 }
 
                 if (change) this._drawLine(a);
+            }
+
+            else {
+                this._customers = [];
+                this._drawLine([]);
             }
         });
 
@@ -83,6 +89,11 @@ export class ReportComponent implements OnInit {
                 }
 
                 if (change) this._drawBar(a.filter(b => b.open));
+
+            }
+            else {
+                this._customers = [];
+                this._drawBar([]);
             }
         })
     }

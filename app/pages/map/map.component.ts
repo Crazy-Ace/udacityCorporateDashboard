@@ -56,6 +56,11 @@ export class MapComponent implements OnInit {
                     this._addBubbles(JSON.parse(JSON.stringify(this._locations)))
                 }
             }
+
+            else {
+                this.map.bubbles([]);
+                this._locations = [];
+            }
         })
     }
 
