@@ -22,15 +22,25 @@ export const issues = (state = [], action: Action) => {
         case 'UPDATE_ISSUES':
             let temp1 = [...state];
             if (Array.isArray(action.payload)) {
-                action.payload.forEach(a => {
-                    let holder = temp1.find(b => b.id === a.id);
-                    a.createdOn = new Date(a.createdOn);
-                    if (a.closedOn) a.closedOn = new Date(a.closedOn);
+                temp1.forEach((a, i) => {
+                    let holder = action.payload.find(b => b.id === a.id);
                     if (holder) {
-                        if (!equalityTest(holder, a)) temp1[temp1.findIndex(b => b.id === a.id)] = a;
+                        holder.createdOn = new Date(holder.createdOn);
+                        if (holder.closedOn) holder.closedOn = new Date(holder.closedOn);
+                        if (!equalityTest(holder, a)) temp1[i] = holder;
+                        action.payload[action.payload.findIndex(b => b.id === a.id)]['checked'] = true;
                     }
-                    else temp1.push(a);
-                });   
+                    else temp1.splice(i, 1);
+                });
+
+                action.payload.forEach(a => {
+                    if (!a.checked) {
+                        let final = a;
+                        final.createdOn = new Date(a.createdOn);
+                        if (final.closedOn) final.closedOn = new Date(a.closedOn);
+                        temp1.push(final)
+                    }
+                })
             }
             return temp1;
         case 'SORT_ISSUES':
